@@ -1,19 +1,26 @@
 use bevy::{prelude::*, transform::{commands, self}, window::PrimaryWindow, sprite};
+use bevy_ecs_tilemap::prelude::*;
 use player::*;
 use components::*;
+use debug::*;
+use tilemap::*;
 
 mod player;
 pub mod components;
+mod debug;
+mod tilemap;
 
 
 fn main() {
     App::new()
     .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
+    .add_plugins(DebugPlugin) //bevy inspector plugin
+    .add_plugins(TilemapPlugin)
+    .add_plugins(CreateMapPlugin)
     .add_systems(Startup, (spawn_player, spawn_camera))
     .add_systems(Update, (animate_sprite, player_movement, change_player_animation))
     .run()
 }
-//Animating sprites
 
 //Animation fuction which creates a loop through sprites using timer
 pub fn animate_sprite(
