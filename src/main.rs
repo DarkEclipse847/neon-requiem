@@ -1,17 +1,14 @@
-use bevy::{prelude::*, transform::{commands, self}, window::PrimaryWindow, sprite, asset::ChangeWatcher, render::camera::ScalingMode};
-use bevy_ecs_tilemap::prelude::*;
+use bevy::{prelude::*, transform::{commands, self}};
 use bevy_sprite3d::*;
 
 
 use player::*;
 use components::*;
 use debug::*;
-use tilemap::*;
 
 mod player;
 pub mod components;
 mod debug;
-mod tilemap;
 
 
 fn main() {
@@ -38,12 +35,14 @@ fn main() {
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, spawn_player.run_if(in_state(GameState::Loading)))
     .add_systems(Update, animate_sprite.run_if(in_state(GameState::Ready)))
+    .add_systems(Update, player_movement.run_if(in_state(GameState::Ready)))
     .insert_resource(ImageAssets::default())
     .run()
 }
 
 
 //Animation fuction which creates a loop through sprites using timer
+
 fn animate_sprite(
     time: Res<Time>,
     mut query: Query<(&mut AnimationTimer, &mut AtlasSprite3dComponent)>,

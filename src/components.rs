@@ -5,9 +5,10 @@ pub enum GameState { #[default] Loading, Ready }
 
 #[derive(Component)]
 //Declaring how much images animation will use
-pub struct AnimationIndices{
-    pub first: usize,
-    pub last: usize,
+pub struct Animation{
+    pub frames: Vec<usize>,
+    pub counter: usize,
+    pub timer: Timer,
 }
 #[derive(Resource, Default)]
 pub struct ImageAssets {
