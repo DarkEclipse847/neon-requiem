@@ -10,9 +10,6 @@ pub fn spawn_player(
     assets: Res<ImageAssets>,
     mut next_state: ResMut<NextState<GameState>>,
     mut sprite_params: Sprite3dParams,
-    keyboard_input: Res<Input<KeyCode>>
-
-
 ){
     if asset_server.get_load_state(assets.image.clone()) != LoadState::Loaded{return;}
     next_state.set(GameState::Ready);

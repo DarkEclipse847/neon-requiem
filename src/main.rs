@@ -41,27 +41,12 @@ fn main() {
 }
 
 
-//Animation fuction which creates a loop through sprites using timer
-
-//fn animate_sprite(
-//    time: Res<Time>,
-//    mut query: Query<(&mut AnimationTimer, &mut AtlasSprite3dComponent,)>,
-//) {
-//    for (mut timer, mut sprite) in query.iter_mut() {
-//        timer.tick(time.delta());
-//        if timer.just_finished() {
-//            sprite.index = (sprite.index + 1) % sprite.atlas.len();
-//        }
-//    }
-//}
-
-
 fn animate_sprite(
     time: Res<Time>,
-    mut query: Query<(&Player, &mut Animation, &mut AtlasSprite3dComponent)>,
+    mut query: Query<(&mut Animation, &mut AtlasSprite3dComponent)>,
     keyboard_input: Res<Input<KeyCode>>,
 ) {
-    for (player, mut animation, mut sprite) in query.iter_mut() {
+    for ( mut animation, mut sprite) in query.iter_mut() {
         //Timer causes sprites to update too late, so it causing bad animation switch
         //TODO: Fix animation switch
         animation.timer.tick(time.delta());
@@ -115,8 +100,7 @@ fn animate_sprite(
     }
 }
 
-//Spawns camera in center of a main window in 3d
-//to use billboard sprites which i hopefully add later using bevy_sprites3d
+//Spawns camera in center of a main window in 3d to use billboard sprites
 
 pub fn spawn_camera(
     mut commands: Commands,
