@@ -1,6 +1,7 @@
 use bevy::{prelude::*, asset::LoadState};
 use crate::components::*;
 use bevy_sprite3d::*;
+use bevy::utils::Duration;
 
 
 pub fn spawn_player(
@@ -9,22 +10,38 @@ pub fn spawn_player(
     assets: Res<ImageAssets>,
     mut next_state: ResMut<NextState<GameState>>,
     mut sprite_params: Sprite3dParams,
+    keyboard_input: Res<Input<KeyCode>>
+
+
 ){
     if asset_server.get_load_state(assets.image.clone()) != LoadState::Loaded{return;}
     next_state.set(GameState::Ready);
-    commands.spawn((AtlasSprite3d {
-        atlas: assets.tileset.clone(),
+    
+    let mut entity = |(x, y), tile_x, tile_y, height, frames| {
+        let mut timer = Timer::from_seconds(0.2, TimerMode::Repeating);
+        timer.set_elapsed(Duration::from_secs_f32(0.2));
 
-        pixels_per_metre: 32.,
-        partial_alpha: true,
-        unlit: true,
-        index: 3,
-        // transform: Transform::from_xyz(0., 0., 0.),
-        // pivot: Some(Vec2::new(0.5, 0.5)),
+        for i in 0usize..height {
+            let mut c = commands.spawn((AtlasSprite3d {
+                    atlas: assets.tileset.clone(),
+                    pixels_per_metre: 16.,
+                    index: (tile_x + (tile_y - i)) as usize,
+                    transform: Transform::from_xyz(x as f32, i as f32 + 0.498, y),
+                    ..default()
+                }.bundle(&mut sprite_params),
+                Player {},
+            ));
 
-        ..default()}
-    .bundle(&mut sprite_params), Player{}))
-    .insert(AnimationTimer(Timer::from_seconds(0.5, TimerMode::Repeating)));
+            if frames > 1 {
+                c.insert(Animation {
+                    frames: (0..frames).map(|j| j + tile_x + (tile_y - i) as usize).collect(),
+                    counter: 0,
+                    timer: timer.clone(),
+                });
+            }
+        }
+    };
+    entity((0., 0.), 1, 0, 1, 4);
 }
 
 pub const PLAYER_SPEED: f32 = 2.0;
