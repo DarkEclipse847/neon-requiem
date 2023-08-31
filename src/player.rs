@@ -27,6 +27,7 @@ pub fn spawn_player(
                     ..default()
                 }.bundle(&mut sprite_params),
                 Player {},
+                FaceCamera{},
             ));
 
             if frames > 1 {
@@ -49,24 +50,47 @@ pub fn player_movement(
     keyboard_input: Res<Input<KeyCode>>,
     mut player_query: Query<&mut Transform, With<Player>>,
     time: Res<Time>,
+    camera_query: Query<&Transform, (With<Camera3d>, Without<Player>)>
 ){
-    if let Ok(mut transform) = player_query.get_single_mut(){
+    for mut player_transform in player_query.iter_mut(){
+        let cam = match camera_query.get_single(){
+            Ok(c) => c,
+            Err(e) => Err(format!("Error with loading query: {}", e)).unwrap(),
+        };
         let mut direction = Vec3::ZERO;
         if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A){
-            direction += Vec3::new(-1.0, 0.0, 0.0);
+            direction += cam.left();
         }
         if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D){
-            direction += Vec3::new(1.0, 0.0, 0.0);
+            direction += cam.right();
         }
         if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W){
-            direction += Vec3::new(0.0, 1.0, 0.0);
+            direction += cam.forward();
         }
         if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S){
-            direction += Vec3::new(0.0, -1.0, 0.0);
+            direction += cam.back();
         }
-        if direction.length() > 0.0 {
-            direction = direction.normalize();
-        }
-        transform.translation += direction*PLAYER_SPEED*time.delta_seconds();
+        direction.y = 0.0;
+        let movement =direction.normalize_or_zero()*2.0*time.delta_seconds();
+        player_transform.translation += movement;
     }
+    //if let Ok(mut transform) = player_query.get_single_mut(){
+    //    let mut direction = Vec3::ZERO;
+    //    if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A){
+    //        direction += Vec3::new(-1.0, 0.0, 0.0);
+    //    }
+    //    if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D){
+    //        direction += Vec3::new(1.0, 0.0, 0.0);
+    //    }
+    //    if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W){
+    //        direction += Vec3::new(-1.0, 0.0, -1.0);
+    //    }
+    //    if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S){
+    //        direction += Vec3::new(1.0, 0.0, 1.0);
+    //    }
+    //    if direction.length() > 0.0 {
+    //        direction = direction.normalize();
+    //    }
+    //    transform.translation += direction*PLAYER_SPEED*time.delta_seconds();
+    //}
 }

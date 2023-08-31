@@ -1,14 +1,16 @@
-use bevy::{prelude::*, transform::{commands, self}, input::keyboard};
+use bevy::{prelude::*, transform::{commands, self}, input::keyboard, render::camera::ScalingMode};
 use bevy_sprite3d::*;
 
 
 use player::*;
 use components::*;
 use debug::*;
+use tilemap::*;
 
 mod player;
 pub mod components;
 mod debug;
+mod tilemap;
 
 
 fn main() {
@@ -34,13 +36,16 @@ fn main() {
     )
     .add_systems(Startup, spawn_camera)
     .add_systems(Update, spawn_player.run_if(in_state(GameState::Loading)))
+    .add_systems(OnEnter(GameState::Ready), spawn_map)
     .add_systems(Update, animate_sprite.run_if(in_state(GameState::Ready)))
     .add_systems(Update, player_movement.run_if(in_state(GameState::Ready)))
+    .add_systems( Update, face_camera.run_if(in_state(GameState::Ready)) )
     .insert_resource(ImageAssets::default())
     .run()
 }
 
 
+//animating player sprite
 fn animate_sprite(
     time: Res<Time>,
     mut query: Query<(&mut Animation, &mut AtlasSprite3dComponent)>,
@@ -105,6 +110,28 @@ fn animate_sprite(
 pub fn spawn_camera(
     mut commands: Commands,
 ){
-    commands.spawn(Camera3dBundle::default()).insert(Transform::from_xyz(0.0, 0.0, 5.0));
+    commands.spawn(Camera3dBundle{
+        projection: OrthographicProjection{
+            scale: 3.0,
+            scaling_mode: ScalingMode::FixedVertical(2.0),
+            ..default()
+        }
+        .into(),
+        transform: Transform::from_xyz(5.0, 5.0, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
+        ..default()
+    });
     println!("Camera has spawned");
+}
+
+pub fn face_camera(
+    camera_query: Query<&Transform, With<Camera3d>>,
+    mut query: Query<&mut Transform, (With<FaceCamera>, Without<Camera3d>)>
+){
+    let camera_transform = camera_query.single();
+    for mut transform in query.iter_mut() {
+        let mut delta = camera_transform.translation - transform.translation;
+        delta.y = 0.0;
+        delta += transform.translation;
+        transform.look_at(delta, Vec3::Y)
+    }
 }

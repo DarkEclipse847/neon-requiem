@@ -10,7 +10,9 @@ This is a simple visual novel(quest) about finding purpouse in life. This is a s
 - [ ] Create a camera movement
 - [ ] Implement dynamic lightning
     - [ ] add lightsourses
-    - [ ] add glowing characters
+    - [ ] add glowing characters(so they can be visible in the dark)
     - [ ] add glowing blocks
-
+### Thoughts:
+- Use bevy-vfx-bug plugin to complete trippy scene in the future
+    - chromatic abberation could come in handy for replecating visual glitches
     
