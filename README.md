@@ -13,8 +13,8 @@ This is a simple visual novel(quest) about finding purpouse in life. This is a s
     - [ ] add lightsourses
     - [ ] add glowing characters(so they can be visible in the dark)
     - [ ] add glowing blocks
-- [ ] Fix movement animation
-    - animation behaving weirdly after adding face_camera fn so it needs to be fixed
+- [x] ~~Fix movement animation~~
+    - ~~animation behaving weirdly after adding face_camera fn so it needs to be fixed~~
 ### Thoughts:
 - Overlapping floor textures actually looks really cool, i need to run tests on other devices later, maybe i'll add thisartifacts as a feature
 

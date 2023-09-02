@@ -77,22 +77,22 @@ fn animate_sprite(
                 animation.counter %= animation.frames.len();
             }
             if (keyboard_input.any_pressed([KeyCode::D, KeyCode::Right]) && keyboard_input.any_pressed([KeyCode::W, KeyCode::Up])) && !keyboard_input.any_just_released([KeyCode::W, KeyCode::Up, KeyCode::D, KeyCode::Right]){
-                    sprite.index = animation.frames[animation.counter]+40;
+                    sprite.index = animation.frames[animation.counter]+35;
                     animation.counter += 1;
                     animation.counter %= animation.frames.len();
             }
             if (keyboard_input.any_pressed([KeyCode::D, KeyCode::Right]) && keyboard_input.any_pressed([KeyCode::S, KeyCode::Down])) && !keyboard_input.any_just_released([KeyCode::S, KeyCode::Down, KeyCode::D, KeyCode::Right]){
-                sprite.index = animation.frames[animation.counter]+30;
+                sprite.index = animation.frames[animation.counter]+25;
                 animation.counter += 1;
                 animation.counter %= animation.frames.len();
             }
             if (keyboard_input.any_pressed([KeyCode::A, KeyCode::Left]) && keyboard_input.any_pressed([KeyCode::W, KeyCode::Up])) && !keyboard_input.any_just_released([KeyCode::W, KeyCode::Up, KeyCode::A, KeyCode::Left]){
-                sprite.index = animation.frames[animation.counter]+35;
+                sprite.index = animation.frames[animation.counter]+40;
                 animation.counter += 1;
                 animation.counter %= animation.frames.len();
             }
             if (keyboard_input.any_pressed([KeyCode::A, KeyCode::Left]) && keyboard_input.any_pressed([KeyCode::S, KeyCode::Down])) && !keyboard_input.any_just_released([KeyCode::S, KeyCode::Down, KeyCode::A, KeyCode::Left]){
-                sprite.index = animation.frames[animation.counter]+25;
+                sprite.index = animation.frames[animation.counter]+30;
                 animation.counter += 1;
                 animation.counter %= animation.frames.len();
             }
