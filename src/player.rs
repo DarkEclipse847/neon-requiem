@@ -50,7 +50,7 @@ pub fn player_movement(
     keyboard_input: Res<Input<KeyCode>>,
     mut player_query: Query<&mut Transform, With<Player>>,
     time: Res<Time>,
-    camera_query: Query<&Transform, (With<Camera3d>, Without<Player>)>
+    camera_query: Query<&mut Transform, (With<Camera3d>, Without<Player>)>
 ){
     for mut player_transform in player_query.iter_mut(){
         let cam = match camera_query.get_single(){
@@ -71,26 +71,77 @@ pub fn player_movement(
             direction += cam.back();
         }
         direction.y = 0.0;
-        let movement =direction.normalize_or_zero()*2.0*time.delta_seconds();
+        let movement =direction.normalize_or_zero()*PLAYER_SPEED*time.delta_seconds();
         player_transform.translation += movement;
+
+        //Camera follow
+        //let position = player_transform.translation;
+        //for mut cam_transform in camera_query.iter_mut(){
+        //    cam_transform.translation.x = position.x;
+        //    cam_transform.translation.y = position.y;
+        //    cam_transform.translation.z = position.z;
+        //}
+
     }
-    //if let Ok(mut transform) = player_query.get_single_mut(){
-    //    let mut direction = Vec3::ZERO;
-    //    if keyboard_input.pressed(KeyCode::Left) || keyboard_input.pressed(KeyCode::A){
-    //        direction += Vec3::new(-1.0, 0.0, 0.0);
-    //    }
-    //    if keyboard_input.pressed(KeyCode::Right) || keyboard_input.pressed(KeyCode::D){
-    //        direction += Vec3::new(1.0, 0.0, 0.0);
-    //    }
-    //    if keyboard_input.pressed(KeyCode::Up) || keyboard_input.pressed(KeyCode::W){
-    //        direction += Vec3::new(-1.0, 0.0, -1.0);
-    //    }
-    //    if keyboard_input.pressed(KeyCode::Down) || keyboard_input.pressed(KeyCode::S){
-    //        direction += Vec3::new(1.0, 0.0, 1.0);
-    //    }
-    //    if direction.length() > 0.0 {
-    //        direction = direction.normalize();
-    //    }
-    //    transform.translation += direction*PLAYER_SPEED*time.delta_seconds();
-    //}
+}
+
+
+//animating player sprite
+pub fn animate_sprite(
+    time: Res<Time>,
+    mut query: Query<(&mut Animation, &mut AtlasSprite3dComponent)>,
+    keyboard_input: Res<Input<KeyCode>>,
+) {
+    for ( mut animation, mut sprite) in query.iter_mut() {
+        //Timer causes sprites to update too late, so it causing bad animation switch
+        //TODO: Fix animation switch
+        animation.timer.tick(time.delta());
+        if animation.timer.just_finished() {
+            if keyboard_input.pressed(KeyCode::W) || keyboard_input.pressed(KeyCode::Up){
+                sprite.index = animation.frames[animation.counter]+20;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if keyboard_input.pressed(KeyCode::S) || keyboard_input.pressed(KeyCode::Down) {
+                sprite.index = animation.frames[animation.counter]+5;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if keyboard_input.pressed(KeyCode::A) || keyboard_input.pressed(KeyCode::Left) {
+                sprite.index = animation.frames[animation.counter]+15;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if keyboard_input.pressed(KeyCode::D) || keyboard_input.pressed(KeyCode::Right){
+                sprite.index = animation.frames[animation.counter]+10;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if (keyboard_input.any_pressed([KeyCode::D, KeyCode::Right]) && keyboard_input.any_pressed([KeyCode::W, KeyCode::Up])) && !keyboard_input.any_just_released([KeyCode::W, KeyCode::Up, KeyCode::D, KeyCode::Right]){
+                    sprite.index = animation.frames[animation.counter]+35;
+                    animation.counter += 1;
+                    animation.counter %= animation.frames.len();
+            }
+            if (keyboard_input.any_pressed([KeyCode::D, KeyCode::Right]) && keyboard_input.any_pressed([KeyCode::S, KeyCode::Down])) && !keyboard_input.any_just_released([KeyCode::S, KeyCode::Down, KeyCode::D, KeyCode::Right]){
+                sprite.index = animation.frames[animation.counter]+25;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if (keyboard_input.any_pressed([KeyCode::A, KeyCode::Left]) && keyboard_input.any_pressed([KeyCode::W, KeyCode::Up])) && !keyboard_input.any_just_released([KeyCode::W, KeyCode::Up, KeyCode::A, KeyCode::Left]){
+                sprite.index = animation.frames[animation.counter]+40;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if (keyboard_input.any_pressed([KeyCode::A, KeyCode::Left]) && keyboard_input.any_pressed([KeyCode::S, KeyCode::Down])) && !keyboard_input.any_just_released([KeyCode::S, KeyCode::Down, KeyCode::A, KeyCode::Left]){
+                sprite.index = animation.frames[animation.counter]+30;
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+            if !keyboard_input.any_pressed([KeyCode::A, KeyCode::Left, KeyCode::D, KeyCode::Right, KeyCode::W, KeyCode::Up, KeyCode::S, KeyCode::Down]){
+                sprite.index = animation.frames[animation.counter];
+                animation.counter += 1;
+                animation.counter %= animation.frames.len();
+            }
+        }
+    }
 }

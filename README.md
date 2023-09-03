@@ -6,15 +6,17 @@ This is a simple visual novel(quest) about finding purpouse in life. This is a s
 
 ### Tasks:
 - [ ] Need to implement 3d(fake2d) walls
-    - [ ] draw a texture for 3d mesh
-- [ ] Create a camera movement
-    - [ ] move the camera up
+    - [x] draw a texture for 3d mesh
+- [x] ~~Create a camera movement~~
+    - [x] ~~move the camera up~~
+    - [x] ~~Facing camera is working differently than before, fix it~~
 - [ ] Implement dynamic lightning
     - [ ] add lightsourses
     - [ ] add glowing characters(so they can be visible in the dark)
     - [ ] add glowing blocks
 - [x] ~~Fix movement animation~~
     - ~~animation behaving weirdly after adding face_camera fn so it needs to be fixed~~
+- [ ] Tiles are larger than expected. Seems like it fills 2 by 2 sqare with texture. Need to fix this
 ### Thoughts:
 - Overlapping floor textures actually looks really cool, i need to run tests on other devices later, maybe i'll add thisartifacts as a feature
 
