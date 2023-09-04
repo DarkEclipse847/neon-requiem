@@ -23,7 +23,7 @@ pub fn spawn_player(
                     atlas: assets.tileset.clone(),
                     pixels_per_metre: 16.,
                     index: (tile_x + (tile_y - i)) as usize,
-                    transform: Transform::from_xyz(x as f32, i as f32 + 0.498, y),
+                    transform: Transform::from_xyz(x as f32, i as f32, y), // TODO: Fix floating character((i as f32) instead of (i as 32+0.498))
                     ..default()
                 }.bundle(&mut sprite_params),
                 Player {},
@@ -73,20 +73,12 @@ pub fn player_movement(
         direction.y = 0.0;
         let movement =direction.normalize_or_zero()*PLAYER_SPEED*time.delta_seconds();
         player_transform.translation += movement;
-
-        //Camera follow
-        //let position = player_transform.translation;
-        //for mut cam_transform in camera_query.iter_mut(){
-        //    cam_transform.translation.x = position.x;
-        //    cam_transform.translation.y = position.y;
-        //    cam_transform.translation.z = position.z;
-        //}
-
     }
 }
 
 
 //animating player sprite
+//TODO: Need to see how it will behave with another entities(npcs), because we do not wire this animation with player as i can tell....
 pub fn animate_sprite(
     time: Res<Time>,
     mut query: Query<(&mut Animation, &mut AtlasSprite3dComponent)>,

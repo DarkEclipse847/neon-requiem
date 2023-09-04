@@ -30,7 +30,7 @@ fn main() {
                 TextureAtlas::from_grid(assets.image.clone(),
                 Vec2::new(32.0, 32.0),
                 5,
-                10,
+                11,
                 None,
                 None)
             );

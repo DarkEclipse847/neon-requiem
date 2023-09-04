@@ -7,7 +7,8 @@ pub fn spawn_camera(
 ){
     commands.spawn(Camera3dBundle{
         projection: OrthographicProjection{
-            scale: 6.0,
+            near: -10.0,
+            scale: 7.0,
             scaling_mode: ScalingMode::FixedVertical(2.0),
             ..default()
         }
@@ -26,14 +27,14 @@ pub fn face_camera(
     let camera_transform = camera_query.single();
     for mut transform in query.iter_mut() {
         let mut delta = camera_transform.translation - transform.translation;
-        delta.y = 0.0;
+        delta.y = 0.5;
         delta += transform.translation;
         transform.look_at(delta, Vec3::Y)
     }
 }
 
 //Makes camera follow player, taking his position and creating loop that moves camera into that position
-//TODO: It makes the face_camera() function useless somehow, FIX IT
+
 pub fn camera_movement(
     player_query: Query<(&Player, &Transform)>,
     mut camera_query: Query<&mut Transform,(With<Camera3d>, Without<Player>)>,

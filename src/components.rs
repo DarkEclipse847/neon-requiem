@@ -35,6 +35,9 @@ pub struct FaceCamera{}
 //TODO: Think about creating entities file wich would store all entity components
 
 #[derive(Component)]
+pub struct Wall{} //If this entity will be used only for collisions, consider using different name
+
+#[derive(Component)]
 pub struct Player{}
 
 
