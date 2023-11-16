@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use crate::components::*;
 use bevy_sprite3d::*;
+use bevy_rapier3d::prelude::*;
 
 
 pub fn spawn_map(
@@ -36,14 +37,17 @@ pub fn spawn_map(
             let index = map[y][x].0 + map[y][x].1 + 47;
             let (x, y) = (x as f32 - map[y].len() as f32 / 2.0, y as f32 - map.len() as f32 / 2.0);
             if index == 0 { continue; }
-            commands.spawn(AtlasSprite3d {
+            commands.spawn((AtlasSprite3d {
                 atlas: assets.tileset.clone(),
                 pixels_per_metre: 31.9,
                 index: index as usize,
                 double_sided: false,
                 transform: Transform::from_xyz(x, 0.0 - 1.0, y).with_rotation(Quat::from_rotation_x(-std::f32::consts::PI / 2.0)),
                 ..default()
-        }.bundle(&mut sprite_params));
+        }.bundle(&mut sprite_params),
+        Collider::cuboid(0.5, 0.5, 0.01),
+        RigidBody::Fixed,
+        ));
         }
     }
 
@@ -55,10 +59,12 @@ pub fn spawn_map(
             if (map[y][x] != (4,0)) ^ (map[y][x+1] == (4,0)) {
                 continue;
             }
+            println!("{}, {}", x, y);
+            
             let dir = if map[y][x] == (4,0) { 1.0 } else { -1.0 };
             let (x, y) = (x as f32 - map[y].len() as f32 / 2.0, y as f32 - map.len() as f32 / 2.0);
             for i in [0,1]{ // add bottom and top piece
-                commands.spawn(AtlasSprite3d {
+                commands.spawn((AtlasSprite3d {
                         atlas: assets.tileset.clone(),
                         pixels_per_metre: 32.2,
                         index: 48 as usize,
@@ -67,7 +73,10 @@ pub fn spawn_map(
                             .with_rotation(Quat::from_rotation_y(
                                 dir * std::f32::consts::PI / 2.0)),
                         ..default()
-                }.bundle(&mut sprite_params));
+                }.bundle(&mut sprite_params),
+                Collider::cuboid(0.5, 0.5, 0.01),
+                RigidBody::Fixed,
+            ));
             }
         }
     }
@@ -80,7 +89,7 @@ pub fn spawn_map(
             let dir = if map[y][x] == (4,0) { 1.0 } else { -1.0 };
             let (x, y) = (x as f32 - map[y].len() as f32 / 2.0, y as f32 - map.len() as f32 / 2.0);
             for i in [0,1]{ // add bottom and top piece
-                commands.spawn(AtlasSprite3d {
+                commands.spawn((AtlasSprite3d {
                         atlas: assets.tileset.clone(),
                         pixels_per_metre: 32.2,
                         index: 48 as usize,
@@ -89,7 +98,10 @@ pub fn spawn_map(
                             .with_rotation(Quat::from_rotation_y(
                                 (dir-1.0) * std::f32::consts::PI / 2.0)),
                         ..default()
-                }.bundle(&mut sprite_params));
+                }.bundle(&mut sprite_params),
+                Collider::cuboid(0.5, 0.5, 0.01),
+                RigidBody::Fixed,
+                ));
             }
         }
     }

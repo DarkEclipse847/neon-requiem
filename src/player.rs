@@ -1,7 +1,11 @@
-use bevy::{prelude::*, asset::LoadState};
+use bevy::{prelude::*, asset::LoadState, sprite::collide_aabb::collide, transform};
 use crate::components::*;
 use bevy_sprite3d::*;
+use bevy_rapier3d::prelude::*;
 use bevy::utils::Duration;
+
+pub const PLAYER_SIZE: f32 = 1.0;
+pub const TILE_SIZE: f32 = 1.0;
 
 
 pub fn spawn_player(
@@ -11,7 +15,7 @@ pub fn spawn_player(
     mut next_state: ResMut<NextState<GameState>>,
     mut sprite_params: Sprite3dParams,
 ){
-    if asset_server.get_load_state(assets.image.clone()) != LoadState::Loaded{return;}
+    //if asset_server.get_load_state(assets.image.clone()) != LoadState::Loaded{return;}
     next_state.set(GameState::Ready);
     
     let mut entity = |(x, y), tile_x, tile_y, height, frames| {
@@ -23,11 +27,13 @@ pub fn spawn_player(
                     atlas: assets.tileset.clone(),
                     pixels_per_metre: 16.,
                     index: (tile_x + (tile_y - i)) as usize,
-                    transform: Transform::from_xyz(x as f32, i as f32, y), // TODO: Fix floating character((i as f32) instead of (i as 32+0.498))
+                    transform: Transform::from_xyz(x as f32, i as f32, y),
                     ..default()
                 }.bundle(&mut sprite_params),
                 Player {},
                 FaceCamera{},
+                Collider::cuboid(0.5 ,1.0, 0.5),
+                RigidBody::Dynamic,
             ));
 
             if frames > 1 {
@@ -48,8 +54,10 @@ pub const PLAYER_SPEED: f32 = 2.0;
 
 pub fn player_movement(
     keyboard_input: Res<Input<KeyCode>>,
+    wall_query: Query<&Transform, (With<TileCollider>, Without<Player>, Without<Camera3d>)>,
     mut player_query: Query<&mut Transform, With<Player>>,
     time: Res<Time>,
+    //wall_query: Query<&Transform, (With<Wall>, Without<Player>)>,
     camera_query: Query<&mut Transform, (With<Camera3d>, Without<Player>)>
 ){
     for mut player_transform in player_query.iter_mut(){
@@ -71,8 +79,9 @@ pub fn player_movement(
             direction += cam.back();
         }
         direction.y = 0.0;
-        let movement =direction.normalize_or_zero()*PLAYER_SPEED*time.delta_seconds();
+        let movement = direction.normalize_or_zero()*PLAYER_SPEED*time.delta_seconds();
         player_transform.translation += movement;
+
     }
 }
 

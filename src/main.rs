@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_sprite3d::*;
+use bevy_rapier3d::prelude::*;
 
 
 use player::*;
@@ -22,6 +23,8 @@ fn main() {
     )
     .add_plugins(Sprite3dPlugin)
     .add_plugins(DebugPlugin)
+    //.add_plugins(RapierDebugRenderPlugin::default())
+    .add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
     .add_state::<GameState>()
     .add_systems(Startup, 
         |asset_server: Res<AssetServer>, mut assets: ResMut<ImageAssets>, mut texture_atlases: ResMut<Assets<TextureAtlas>>|{
@@ -43,6 +46,7 @@ fn main() {
     .add_systems(Update, player_movement.run_if(in_state(GameState::Ready)))
     .add_systems( OnEnter(GameState::Ready), face_camera)
     .add_systems( Update, camera_movement.run_if(in_state(GameState::Ready)))
+    //.add_systems(Update, collision_system.run_if(in_state(GameState::Ready)))
     .insert_resource(ImageAssets::default())
     .run()
 }

@@ -41,3 +41,5 @@ pub struct Wall{} //If this entity will be used only for collisions, consider us
 pub struct Player{}
 
 
+#[derive(Component)]
+pub struct TileCollider{}

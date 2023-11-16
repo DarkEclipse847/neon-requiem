@@ -8,7 +8,7 @@ This is a simple visual novel(quest) about finding purpouse in life. This is a s
 - [ ] Need to implement 3d(fake2d) walls
     - [x] draw a texture for 3d mesh
     - [ ] create collision system
-    - [ ] draw some sprites so walls will be more realistic 
+    - [ ] draw some sprites so walls will be more realistic
 - [ ] Implement dynamic lightning
     - [ ] add lightsourses
     - [ ] add glowing characters(so they can be visible in the dark)
@@ -26,4 +26,4 @@ This is a simple visual novel(quest) about finding purpouse in life. This is a s
 
 - Use bevy-vfx-bug plugin to complete trippy scene in the future
     - chromatic abberation could come in handy for replecating visual glitches
-    
+- Easter egg ending with falling
