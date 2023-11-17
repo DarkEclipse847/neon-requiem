@@ -1,7 +1,7 @@
 use bevy::{prelude::*, transform};
 use crate::components::*;
 use bevy_sprite3d::*;
-use bevy_rapier3d::prelude::*;
+use bevy_rapier3d::{prelude::*, parry::transformation::utils::transform, na::{Rotation, Isometry}, rapier::dynamics::{RigidBodyBuilder, RigidBodyType}};
 use bevy::utils::Duration;
 
 //pub const PLAYER_SIZE: f32 = 1.0;
@@ -29,15 +29,14 @@ pub fn spawn_player(
                 }.bundle(&mut sprite_params),
                 Player {},
                 FaceCamera{},
-                Collider::cuboid(0.5 , 0.9, 0.5), //TODO: Change that to capsule to prevent unwanted rotation
-                //Collider::capsule_y(0.5, 0.5),
-                KinematicCharacterController{
-                    snap_to_ground: Some(CharacterLength::Absolute(1.5)),
-                    ..default()
-                },
+                Collider::cuboid(0.5 , 0.9, 0.5),
+                //KinematicCharacterController{
+                //    snap_to_ground: Some(CharacterLength::Absolute(1.5)),
+                //    ..default()
+                //},
                 RigidBody::Dynamic,
             ));
-
+            c.insert(LockedAxes::ROTATION_LOCKED);
             if frames > 1 {
                 c.insert(Animation {
                     frames: (0..frames).map(|j| j + tile_x + (tile_y - i) as usize).collect(),
@@ -81,7 +80,6 @@ pub fn player_movement(
         direction.y = 0.0;
         let movement = direction.normalize_or_zero()*PLAYER_SPEED*time.delta_seconds();
         player_transform.translation += movement;
-
     }
 }
 
