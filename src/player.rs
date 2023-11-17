@@ -29,13 +29,23 @@ pub fn spawn_player(
                 }.bundle(&mut sprite_params),
                 Player {},
                 FaceCamera{},
-                Collider::cuboid(0.5 , 0.9, 0.5),
                 //KinematicCharacterController{
                 //    snap_to_ground: Some(CharacterLength::Absolute(1.5)),
                 //    ..default()
                 //},
                 RigidBody::Dynamic,
             ));
+            
+            c.with_children(| children | {
+                children.spawn(Collider::cuboid(0.5 , 0.9, 0.5))
+                    .insert(TransformBundle::from(Transform::from_rotation(Quat::from_euler(
+                        EulerRot::XYZ,
+                        (0.0_f32).to_degrees(),
+                        (45.0_f32).to_radians(),
+                        (0.0_f32).to_degrees()
+                    )
+                )));
+            });
             c.insert(LockedAxes::ROTATION_LOCKED);
             if frames > 1 {
                 c.insert(Animation {
