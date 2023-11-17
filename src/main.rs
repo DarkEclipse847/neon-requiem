@@ -23,7 +23,7 @@ fn main() {
     )
     .add_plugins(Sprite3dPlugin)
     .add_plugins(DebugPlugin)
-    //.add_plugins(RapierDebugRenderPlugin::default())
+    .add_plugins(RapierDebugRenderPlugin::default())
     .add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
     .add_state::<GameState>()
     .add_systems(Startup, 

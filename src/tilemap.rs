@@ -23,6 +23,7 @@ pub fn spawn_map(
         vec![f(),f(),f(),f(),f(),f()],
     ];
 
+
     //Creates a padding
     map.insert(0, vec![(4,0); map[0].len()]);
     map.push(vec![(4,0); map[0].len()]);
@@ -105,4 +106,19 @@ pub fn spawn_map(
             }
         }
     }
+
+    //Spawn light sourse(test)
+    commands.spawn((PointLightBundle {
+        point_light: PointLight {
+            intensity: 100.0,
+            color: Color::VIOLET,
+            shadows_enabled: true,
+            ..default()
+        },
+        transform: Transform::from_xyz(2.0, 1.8, -2.5),
+        ..default()
+    },
+    RigidBody::Dynamic,
+    Collider::ball(0.1)
+    ));
 }
