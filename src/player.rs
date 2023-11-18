@@ -1,7 +1,7 @@
 use bevy::{prelude::*, transform};
 use crate::components::*;
 use bevy_sprite3d::*;
-use bevy_rapier3d::{prelude::*, parry::transformation::utils::transform, na::{Rotation, Isometry}, rapier::dynamics::{RigidBodyBuilder, RigidBodyType}};
+use bevy_rapier3d::prelude::*;
 use bevy::utils::Duration;
 
 //pub const PLAYER_SIZE: f32 = 1.0;
@@ -29,13 +29,10 @@ pub fn spawn_player(
                 }.bundle(&mut sprite_params),
                 Player {},
                 FaceCamera{},
-                //KinematicCharacterController{
-                //    snap_to_ground: Some(CharacterLength::Absolute(1.5)),
-                //    ..default()
-                //},
                 RigidBody::Dynamic,
             ));
-            
+
+            //Collider isometric rotation
             c.with_children(| children | {
                 children.spawn(Collider::cuboid(0.5 , 0.9, 0.5))
                     .insert(TransformBundle::from(Transform::from_rotation(Quat::from_euler(
@@ -46,6 +43,8 @@ pub fn spawn_player(
                     )
                 )));
             });
+
+            //Locking rotation on collision
             c.insert(LockedAxes::ROTATION_LOCKED);
             if frames > 1 {
                 c.insert(Animation {
