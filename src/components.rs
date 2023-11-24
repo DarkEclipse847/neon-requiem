@@ -3,7 +3,12 @@ use bevy::prelude::*;
 // GAMESTATE COMPONENTS
 
 #[derive(States, Hash, Clone, PartialEq, Eq, Debug, Default)]
-pub enum GameState { #[default] Loading, Ready }
+pub enum GameState {
+    #[default] MainMenu,
+    Loading,
+    Ready,
+    PauseMenu,
+}
 
 //TEXTURE ATLAS COMPONENTS
 
@@ -33,6 +38,12 @@ pub struct FaceCamera{}
 
 //ENTITIES COMPONENTS
 //TODO: Think about creating entities file wich would store all entity components
+
+#[derive(Component)]
+pub struct MenuUIRoot{}
+
+#[derive(Component)]
+pub struct StartButton{}
 
 #[derive(Component)]
 pub struct Wall{} //If this entity will be used only for collisions, consider using different name

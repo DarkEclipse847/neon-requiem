@@ -39,7 +39,7 @@ pub fn camera_movement(
     player_query: Query<(&Player, &Transform)>,
     mut camera_query: Query<&mut Transform,(With<Camera3d>, Without<Player>)>,
 ){
-    for (player,player_transform) in player_query.iter(){
+    for (_player,player_transform) in player_query.iter(){
         
         let position = player_transform.translation;
         for mut cam_transform in camera_query.iter_mut(){

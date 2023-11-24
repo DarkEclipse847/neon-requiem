@@ -8,9 +8,11 @@ use components::*;
 use debug::*;
 use tilemap::*;
 use camera::*;
+use menu::*;
 
 mod player;
 pub mod components;
+mod menu;
 mod debug;
 mod tilemap;
 mod camera;
@@ -40,6 +42,8 @@ fn main() {
         }
     )
     .add_systems(Startup, spawn_camera)
+    .add_systems(OnEnter(GameState::MainMenu), menu_setup)
+    .add_systems(Update, start_button_clicked.run_if(in_state(GameState::MainMenu)))
     .add_systems(Update, spawn_player.run_if(in_state(GameState::Loading)))
     .add_systems(OnEnter(GameState::Ready), spawn_map)
     .add_systems(Update, animate_sprite.run_if(in_state(GameState::Ready)))
